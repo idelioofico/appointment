@@ -1,0 +1,53 @@
+﻿@model IEnumerable<First.Models.Item>
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col col-6  ">
+            <h2 class="text-primary">Borrowed Items</h2>
+        </div>
+        <div class="col col-6 text-right">
+            <a asp-controller="Item" asp-action="Create" class="btn btn-info">Create new</a>
+        </div>
+    </div>
+    <br />
+    <div class="table-responsive">
+      <table class="table  table-hover table-bordered" width="100%">
+          <thead>
+              <tr>
+                  <th>#</th>
+                  <th>Item</th>
+                  <th>Borrower</th>
+                  <th>Lender</th>
+                  <th>Actions</th>
+              </tr>
+          </thead>
+          <tbody>
+              @if(Model.Count()>0){
+                  @foreach (var item in Model)
+                  {
+              <tr>
+                  <td width="7%">@item.Id</td>
+                  <td >@item.ItemName</td>
+                  <td>@item.Borrower</td>
+                  <td>@item.Lender</td>
+                  <td width="10%">
+                      <div class="btn-group">
+                          <button class="btn btn-warning">Edit</button>
+                          <button class="btn btn-danger">Delete</button>
+                      </div>
+                  </td>
+              </tr>
+                  }
+              }else{
+
+                  <tr>
+                      <td class="alert alert-info text-center"  colspan="5">
+                          No data created yet!
+                      </td>
+                  </tr>
+              }
+
+          </tbody>
+      </table>
+    </div>
+</div>
