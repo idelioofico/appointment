@@ -1,4 +1,4 @@
-# Appointment and Expenses Manager App
+# ASP.NET Appointment and Expenses Manager  Web Application
 
 
 Requirements:
