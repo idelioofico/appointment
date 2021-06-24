@@ -25,12 +25,13 @@ namespace First
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        { 
+        {
             //Get the connection string form appseting
-            string ConnectionStr = Configuration.GetConnectionString("DefaultConnection");
-           //Define data base connection
-            services.AddDbContextPool<AplicationDBContext>(options => options.UseMySql(ConnectionStr, ServerVersion.AutoDetect(ConnectionStr)));
+            //string ConnectionStr = Configuration.GetConnectionString("DefaultConnection");
+            //Define data base connection
+            // services.AddDbContextPool<AplicationDBContext>(options => options.UseSqlServer(ConnectionStr));
             //services.AddDbContext<AplicationDBContext>();
+            services.AddDbContext<AplicationDBContext>();
             services.AddControllersWithViews();
 
         }

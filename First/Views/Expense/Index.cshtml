@@ -19,6 +19,7 @@
                     <th>#</th>
                     <th>Description</th>
                     <th>Amount</th>
+                    <th>Expense Type</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -27,17 +28,18 @@
                 {
                     @foreach (var expense in Model)
                     {
-                        <tr>
-                            <td width="7%">@expense.Id</td>
-                            <td>@expense.Description</td>
-                            <td class="text-right">@expense.Amount</td>
-                            <td width="10%">
-                                <div class="btn-group">
-                                    <a asp-action="Update" asp-route-Id="@expense.Id" class="btn btn-warning">Edit</a>
-                                    <a asp-action="Delete" asp-route-Id="@expense.Id" class="btn btn-danger">Delete</a>
-                                </div>
-                            </td>
-                        </tr>
+                <tr>
+                    <td width="7%">@expense.Id</td>
+                    <td>@expense.Description</td>
+                    <td class="text-right">@expense.Amount</td>
+                    <td>@expense.ExpenseCategory.Description</td>
+                    <td width="10%">
+                        <div class="btn-group">
+                            <a asp-action="Update" asp-route-Id="@expense.Id" class="btn btn-warning">Edit</a>
+                            <a asp-action="Delete" asp-route-Id="@expense.Id" class="btn btn-danger">Delete</a>
+                        </div>
+                    </td>
+                </tr>
                     }
                 }
                 else

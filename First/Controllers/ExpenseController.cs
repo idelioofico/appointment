@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using First.Data;
 using First.Models;
+using First.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace First.Controllers
 {
@@ -13,32 +15,48 @@ namespace First.Controllers
         private readonly AplicationDBContext _db;
 
         public ExpenseController(AplicationDBContext context) {
-            this._db = context;
+            _db = context;
         }
 
         public IActionResult Index()
         {
-            IEnumerable<Expense> expenses = this._db.Expenses;
+            IEnumerable<Expense> expenses = _db.Expenses;
+           
+            foreach (var expense in expenses.ToList()) {
+
+                expense.ExpenseCategory = _db.ExpenseCategories.FirstOrDefault(u => u.Id == expense.ExpenseCategoryId);
+            }
+
             return View(expenses);
         }
 
         public IActionResult Create()
         {
-            return View();
+
+            ExpenseVM expenseVM = new()
+            {
+                Expense = new Expense(),
+                CategoryDropDown = _db.ExpenseCategories.Select(i => new SelectListItem {
+                    Text=i.Description,
+                    Value=i.Id.ToString()
+                })
+            };
+         
+            return View(expenseVM);
         }
 
         [HttpPost]
      
-        public IActionResult Create(Expense attributes)
+        public IActionResult Create(ExpenseVM expenseVM)
         {
             if (ModelState.IsValid)
             {
-                this._db.Expenses.Add(attributes);
-                this._db.SaveChanges();
+                _db.Expenses.Add(expenseVM.Expense);
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             else {
-                return View(attributes);
+                return View(expenseVM.Expense);
             }
         }
 
@@ -48,7 +66,7 @@ namespace First.Controllers
         public IActionResult Show(int? Id)
         {
             if (Id != null || Id != 0) {
-                var expense = this._db.Expenses.Find(Id);
+                var expense = _db.Expenses.Find(Id);
                 if (expense != null)
                 {
                     return View(expense);
@@ -61,20 +79,30 @@ namespace First.Controllers
         [HttpGet]
         public IActionResult Update(int? Id) {
 
-            var expense = this._db.Expenses.Find(Id);
-            if (expense == null) {
+
+            ExpenseVM expenseVM = new()
+            {
+                Expense = _db.Expenses.Find(Id),
+                CategoryDropDown = _db.ExpenseCategories.Select(u => new SelectListItem
+                {
+                    Value = u.Id.ToString(),
+                    Text = u.Description,
+                })
+            };
+
+            if (expenseVM == null) {
                 return NotFound();
             }
 
-            return View(expense);
+            return View(expenseVM);
         }
 
         [HttpPost]
-        public IActionResult Update(Expense attributes)
+        public IActionResult Update(ExpenseVM expenseVM)
         {
 
-            this._db.Expenses.Update(attributes);
-            this._db.SaveChanges();
+            _db.Expenses.Update(expenseVM.Expense);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -82,17 +110,25 @@ namespace First.Controllers
         [HttpGet]
         public IActionResult Delete(int? Id)
         {
-            //return Ok("ID: "+Id);
 
-            var expense=this._db.Expenses.Find(Id);
+            ExpenseVM expenseVM = new()
+            {
+                Expense = _db.Expenses.Find(Id),
+                CategoryDropDown = _db.ExpenseCategories.Select(u => new SelectListItem
+                {
+                    Value = u.Id.ToString(),
+                    Text = u.Description
+                })
+            };
 
-            if (expense == null) {
+           
+
+            if (expenseVM == null) {
                 return NotFound();
             }
 
-         
-
-            return View(expense);
+        
+            return View(expenseVM);
         }
 
         [HttpPost]
@@ -100,15 +136,15 @@ namespace First.Controllers
         {
             //return Ok("ID: "+Id);
 
-            var expense = this._db.Expenses.Find(Id);
+            var expense = _db.Expenses.Find(Id);
 
             if (expense == null)
             {
                 return NotFound();
             }
 
-            this._db.Remove(expense);
-            this._db.SaveChanges();
+            _db.Remove(expense);
+            _db.SaveChanges();
 
             return RedirectToAction("Index");
         }
